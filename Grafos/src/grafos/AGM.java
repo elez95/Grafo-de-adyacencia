@@ -16,19 +16,23 @@ public class AGM {
 		
 		ArrayList<Integer> marcados = new ArrayList<Integer>();
 		
-		ArrayList<int[]> vecinosPendientes = new ArrayList<int[]>();
+		ArrayList<int[]> vecinosPendientes = new ArrayList<int[]>(); 
 		
 		marcados.add(0);
-		
-		vecinosPendientes = agregarVecinosPendientes(grafo, 0, vecinosPendientes);
-		//System.out.println("menor es " + buscarVecinoMenorPeso(vecinosPendientes));
+		marcados.add(3);
+		marcados.add(5);
+		System.out.println("marcados " + marcados);
+		vecinosPendientes = agregarVecinosPendientes(grafo, 1, vecinosPendientes);
+		System.out.println("menor es " + buscarVecinoMenorPeso(vecinosPendientes,marcados));
 		//System.out.println(vecinosPendientes.get(1)[2]);
 		
 //		for(int i = 1; i < grafo.tamano(); i++) 
 //		{
 //			
-//			int indice = buscarVecinoMenorPeso(vecinosPendientes);
-//			
+//			int indice = buscarVecinoMenorPeso(vecinosPendientes, marcados); //el indice tiene la posicion del arraylist 
+//																	//vecinosPendientes del vecino con menor peso
+//			grafoNuevo.agregarArista(vecinosPendientes.get(indice)[0], vecinosPendientes.get(indice)[1],
+//						vecinosPendientes.get(indice)[2]);
 //			
 //		}
 		
@@ -61,25 +65,60 @@ public class AGM {
 
 		return vPendientes;
 	}
+	 
 	
 	
-	
-	private static int buscarVecinoMenorPeso(ArrayList<int[]> vecinosPendientes) 
+	private static int buscarVecinoMenorPeso(ArrayList<int[]> vecinosPendientes, ArrayList<Integer> marcados) 
 	{
 		//int[] array = vecinosPendientes.get(0);
 		int indice = 0;
-		int menorPeso = vecinosPendientes.get(0)[2];
-		for(int i = 1; i < vecinosPendientes.size(); i++) 
+		int menorPeso = 10;
+		System.out.println("Menor peso " + menorPeso);
+		for(int i = 0; i < vecinosPendientes.size()-1; i++)  
 		{
-			if(vecinosPendientes.get(i)[2] < menorPeso) 
+//			System.out.println("vecinosPendientes.get(i)[2] " + vecinosPendientes.get(i)[2]);
+//			if(vecinosPendientes.get(i)[2] < menorPeso /*&& !marcados.contains(vecinosPendientes.get(i)[0])*/) 
+//			{
+//				//Integer in = vecinosPendientes.get(i)[0];
+//				//System.out.println("in " + in);
+//				//System.out.println(marcados);
+//				if(!marcados.contains(vecinosPendientes.get(i)[0])){
+//					menorPeso = vecinosPendientes.get(i)[2];
+//					indice = i;
+//				}
+//				else {}
+//			}
+			
+			if(vecinosPendientes.get(i)[2] <= vecinosPendientes.get(i+1)[2]) 
 			{
-				menorPeso = vecinosPendientes.get(i)[2];
-				indice = i;
+				if(!marcados.contains(vecinosPendientes.get(i)[0])) 
+				{
+					menorPeso = vecinosPendientes.get(i)[2];
+					indice = i;
+				} 
+				else if (!marcados.contains(vecinosPendientes.get(i+1)[0])) 
+				{
+					menorPeso = vecinosPendientes.get(i+1)[2];
+					indice = i+1;
+				}
+				
+			}
+			else 
+			{
+				if(!marcados.contains(vecinosPendientes.get(i+1)[0])) 
+				{
+					menorPeso = vecinosPendientes.get(i+1)[2];
+					indice = i+1;
+				}
 			}
 		}
 		
 		return indice;
 	}
+	
+	
+	
+	
 	
 	
 	

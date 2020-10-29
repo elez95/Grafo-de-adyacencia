@@ -12,7 +12,7 @@ public class Grafo
 
 	
 	//la cantidad de vertices esta predeterminada desde el constructor
-	public Grafo(int vertices) 
+	public Grafo(int vertices)  
 	{
 		A = new int [vertices][vertices];
 		
