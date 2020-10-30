@@ -13,7 +13,7 @@ public class BFS
 		HashSet<Integer> marcados = new HashSet<Integer>();
 		pendientes.add(0);
 		
-		while(pendientes.size() != 0) 
+		while(pendientes.size() != 0)  
 		{
 			int actual = pendientes.get(0);
 			marcados.add(actual);
