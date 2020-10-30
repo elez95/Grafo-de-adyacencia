@@ -116,7 +116,7 @@ public class Grafo
 		return ret;
 	}
 	
-	public int tamano() 
+	public int tamano()  
 	{ 
 		return A.length;
 	}

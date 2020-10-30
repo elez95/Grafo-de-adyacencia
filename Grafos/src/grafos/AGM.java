@@ -22,7 +22,7 @@ public class AGM {
 		//marcados.add(3);
 		//marcados.add(4);
 		//System.out.println("marcados " + marcados);
-		vecinosPendientes = agregarVecinosPendientes(grafo, 0, vecinosPendientes);
+		vecinosPendientes = agregarVecinosPendientes(grafo, 0, vecinosPendientes, marcados);
 		//System.out.println("menor es " + buscarVecinoMenorPeso(vecinosPendientes,marcados));
 		//System.out.println(vecinosPendientes.get(1)[2]);
 		
@@ -45,9 +45,9 @@ public class AGM {
 			
 			
 
-			vecinosPendientes = agregarVecinosPendientes(grafo, vecinosPendientes.get(indice)[0], vecinosPendientes);
-			
-			vecinosPendientes.remove(indice);
+			vecinosPendientes = agregarVecinosPendientes(grafo, vecinosPendientes.get(indice)[0], vecinosPendientes, marcados);
+			vecinosPendientes = eliminarMarcados(grafo, vecinosPendientes, marcados);
+			//vecinosPendientes.remove(indice);
 			
 			System.out.println("alcanzables ciclo " + BFS.alcanzables(grafoNuevo, 0));
 			
@@ -60,6 +60,8 @@ public class AGM {
 		
 		
 		//agregarVecinosPendientes()
+		System.out.println("marcados " + marcados);
+
 		System.out.println("tamanio grafo nuevo " + grafoNuevo.tamano());
 		return grafoNuevo;
 	}
@@ -70,29 +72,58 @@ public class AGM {
 	
 	
 	
-	private static ArrayList<int[]> agregarVecinosPendientes(Grafo grafo, int vertice, ArrayList<int[]> vPendientes) 
+	private static ArrayList<int[]> agregarVecinosPendientes(Grafo grafo, int vertice, ArrayList<int[]> vPendientes, ArrayList<Integer> marcados) 
 	{
 		for(Integer it : grafo.vecinos(vertice)) 
 		{
+			//if(!marcados.contains(vPendientes.get(it)[0])) {
 			int[] array = new int[3];   //creo el arreglo que despues se va a guardar en el arraylist
 			array[0]= it;
 			array[1]= vertice;
 			array[2]= grafo.pesoDeArista(it, vertice);
 			vPendientes.add(array);
+		//}
 		} 
+		
+//		for(int i = 0; i < grafo.vecinos(vertice).size(); i++) 
+//		{
+//			if(!marcados.contains(vPendientes.get(i)[0])) {
+//				int[] array = new int[3];   //creo el arreglo que despues se va a guardar en el arraylist
+//				array[0]= i;
+//				array[1]= vertice;
+//				array[2]= grafo.pesoDeArista(i, vertice);
+//				vPendientes.add(array);
+//			}
+//		}
 
 		return vPendientes;
+	}
+	
+	
+	private static ArrayList<int[]> eliminarMarcados(Grafo grafo, ArrayList<int[]> vPendientes, ArrayList<Integer>marcados)
+	{
+		ArrayList<int[]> temporal = new ArrayList<int[]>();
+		 int rango = vPendientes.size();
+		for(int i = 0; i < rango; i++) 
+		{
+			if(!marcados.contains(vPendientes.get(i)[0])) 
+			{
+				temporal.add(vPendientes.get(i));
+			}
+		}
+		return temporal;
 	}
 	 
 	
 	
+	@SuppressWarnings("unlikely-arg-type")
 	private static int buscarVecinoMenorPeso(ArrayList<int[]> vecinosPendientes, ArrayList<Integer> marcados) 
 	{
 		//int[] array = vecinosPendientes.get(0);
 		int indice = 0;
-		int menorPeso = 10;
+		int menorPeso = vecinosPendientes.get(0)[2];
 		//System.out.println("Menor peso " + menorPeso);
-		for(int i = 0; i < vecinosPendientes.size()-1; i++)  
+		for(int i = 0; i < vecinosPendientes.size()-1; i++)  //si el tamano es uno devolver ese
 		{
 //			System.out.println("vecinosPendientes.get(i)[2] " + vecinosPendientes.get(i)[2]);
 //			if(vecinosPendientes.get(i)[2] < menorPeso /*&& !marcados.contains(vecinosPendientes.get(i)[0])*/) 
@@ -106,28 +137,43 @@ public class AGM {
 //				}
 //				else {}
 //			}
-			
-			if(vecinosPendientes.get(i)[2] <= vecinosPendientes.get(i+1)[2]) 
+			System.out.println("menor " + menorPeso);
+			if(vecinosPendientes.get(i)[2] <= vecinosPendientes.get(i+1)[2]) // i < i+1
 			{
-				if(!marcados.contains(vecinosPendientes.get(i)[0])) 
+				if(!marcados.contains(vecinosPendientes.get(i)[0]) )  //i no esta marcado
 				{
+					if(vecinosPendientes.get(i)[2] <= menorPeso){
 					menorPeso = vecinosPendientes.get(i)[2];
 					indice = i;
+					}
 				} 
-				else if (!marcados.contains(vecinosPendientes.get(i+1)[0])) 
-				{
-					menorPeso = vecinosPendientes.get(i+1)[2];
+				else {
+					if(vecinosPendientes.get(i+1)[2] <= menorPeso) {
+					menorPeso = vecinosPendientes.get(i+1)[2];     //si i esta marcado ya agrego i+1
 					indice = i+1;
+					}
 				}
 				
 			}
 			else 
 			{
-				if(!marcados.contains(vecinosPendientes.get(i+1)[0])) 
+				if(!marcados.contains(vecinosPendientes.get(i+1)[0]) ) // si i+1 no esta marcado
 				{
+					if(vecinosPendientes.get(i+1)[2] <= menorPeso) {
 					menorPeso = vecinosPendientes.get(i+1)[2];
 					indice = i+1;
+					}
 				}
+				//////
+				else {
+					if(vecinosPendientes.get(i)[2] <= menorPeso) 
+					{
+						menorPeso = vecinosPendientes.get(i)[2];
+						indice = i;
+					}
+				}
+
+				
 			}
 		}
 		
@@ -174,7 +220,7 @@ public class AGM {
 		g = arbolGeneradorMinimo(grafo);
 		System.out.println("alcanzables " + BFS.alcanzables(g, 5));
 		
-		int del = 3;
+		int del = 1;
 		System.out.println("vecinos " + del +" g " + g.vecinos(del));
 		System.out.println("vecinos "+del  + " grafo " + grafo.vecinos(del));
 		
